@@ -5,9 +5,11 @@
 // like app/views/layouts/application.html.erb.
 // All it does is render <div>Hello Svelte!</div> at the bottom of the page.
 
-import Game from '../app.svelte'
 
-document.addEventListener('DOMContentLoaded', () => {
+// document.addEventListener('turbolinks:load', () => {
+import Game from '../app.svelte'
+// $(document).on('load turbolinks:load', function() {
+document.addEventListener("DOMContentLoaded", () => {
   const game = new Game({
     target: document.body,
     props: {

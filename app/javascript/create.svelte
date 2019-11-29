@@ -24,11 +24,9 @@
     <div class="team">
       <h3>{team.name}</h3>
       <p>Members:</p>
-      {#if team.members}
-        {#each team.members as member}
-          <p class="member">{member}</p>
-        {/each}
-      {/if}
+      {#each team.members as member}
+        <p class="member">{member}</p>
+      {/each}
       <button on:click={() => removeTeam(i)}>Remove Team</button>
       <button on:click={() => editTeam(i)}>Edit</button>
     </div>
@@ -42,7 +40,7 @@
 
 <h3 class="p-3">Wheel Sections</h3>
 <div class="p-3">
-  <input type="range" on:change={updateWedges} bind:value={numOfWedges} max=10 min=4 step=2>
+  <label>Number of Sections:<input type="range" on:change={updateWedges} bind:value={numOfWedges} max=10 min=4 step=2></label>
   <div class="wedges">
     {#each wedges as wedge}
       <div class="p-2 bg-primary rounded">
@@ -69,14 +67,15 @@
   </div>
 </div>
 
-<button class="btn btn-success">Create Game</button>
+<button class="btn btn-success" on:click={createGame}>Create Game</button>
 
 <script>
   let teams = [];
   let newTeam = {
     name: "",
-    members: []
+    members: [""]
   };
+  import Rails from 'rails-ujs'
 
   let specialOptions = ["Trade Points", "Bankrupt", "None"]
 
@@ -93,15 +92,37 @@
 
   let newTeamMembers = [""];
 
+  function createGame() {
+    console.log("button triggered")
+    Rails.ajax({
+        url: "/play",
+        type: "POST",
+        dataType: "json",
+        data: "game=" + JSON.stringify({
+          "teams": teams,
+          "wheel": wedges
+        })
+    });
+  }
+
 	function updateWedges() {
     let newWedges = [];
 		for (let i = 0; i < numOfWedges; i++) {
-			newWedges.push({
-				text: wedges[i].text,
-        special: wedges[i].special,
-        id: wedges[i].id,
-        value: wedges[i].value
-      });
+      if (i < wedges.length) {
+        newWedges.push({
+          text: wedges[i].text,
+          special: wedges[i].special,
+          id: wedges[i].id,
+          value: wedges[i].value
+        });
+      } else {
+        newWedges.push({
+          text: "",
+          special: "None",
+          id: i,
+          value: 0
+        })
+      }
 		}
     wedges = newWedges;
 	}
@@ -133,7 +154,7 @@
       teams = teams;
       newTeam = {
         name: "",
-        members: []
+        members: [""]
       };
       newTeamMembers = [""];
       newTeam = newTeam;

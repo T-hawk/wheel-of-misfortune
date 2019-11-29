@@ -5,7 +5,8 @@ Rails.application.routes.draw do
   get "/scoreboard", to: "main#scoreboard"
 
   # Game
-  get "/play", to: "game#play"
+  post "/play", to: "game#play"
+  # post "/play/start", to: "game#start"
   get "/new", to: "game#new"
   get "/game", to: "game#show"
 

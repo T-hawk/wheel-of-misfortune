@@ -1,2 +1,7 @@
-<%= javascript_pack_tag 'game' %>
-<%= stylesheet_pack_tag 'game' %>
+<% content_for :head do %>
+  <%= javascript_pack_tag 'game' %>
+  <%= stylesheet_pack_tag 'game' %>
+<% end %>
+
+<%= content_tag :div, class: "game_data", data: { wheel: @wheel, teams: @teams } do %>
+<% end %>

@@ -1,32 +1,5 @@
 <h1>Wheel of Misfortune</h1>
 <Canvas sketch={sketch}/>
-{#if editMode}
-  <input type="range" on:change={updateWedges} bind:value={numOfWedges} max=12 min=4 step=2>
-  <div class="wedges">
-    {#each wedges as wedge}
-      <br>
-      Text:<input bind:value={wedge.text}>
-      <br>
-      Special Case:
-      {#each specialOptions as option}
-        <br>
-      	<label><input type="radio" value={option} name={wedge.id} bind:group={wedge.special}> {option}</label>
-        <br>
-      {/each}
-      <br>
-      {#if true}
-      Point Value:<input type="number" bind:value={wedge.value}>
-      <br>
-      {/if}
-    {/each}
-  </div>
-  <button on:click={toggleEditMode}>Done Editing Wheel</button>
-{:else}
-  <button on:click={toggleEditMode}>Edit Wheel</button>
-{/if}
-
-<button on:click={toggleEditMode}>Make Teams</button>
-
 <button on:click={spin} id="spin">Spin</button>
 <br>
 <br>
@@ -39,11 +12,6 @@
 
 	let numOfWedges = 4;
   let wedges = [];
-  let specialOptions = [
-    "Bankrupt",
-    "Trade Points",
-    "None"
-  ]
 
   let previousSpin;
 
@@ -69,14 +37,6 @@
 			value: 0
 		});
   }
-  
-  function toggleEditMode() {
-    if (editMode) {
-      editMode = false;
-    } else {
-      editMode = true;
-    }
-  }
 
   function spin() {
     if (!spinning) {
@@ -84,18 +44,6 @@
       velocity = Math.floor(Math.random() * (spinVelocity - 10)) + (spinVelocity + 10);
     }
   }
-
-	function updateWedges() {
-		wedges = [];
-		for (let i = 0; i < numOfWedges; i++) {
-			wedges.push({
-				text: "" + i,
-        special: "None",
-        id: i,
-        value: 0
-			});
-		}
-	}
 
 	let sketch = function(p5) {
 
@@ -186,8 +134,4 @@
 
     background-image: linear-gradient( 0.2deg,  rgba(51,204,255,1) 4.8%, rgba(51,102,255,1) 85.5% );
   }
-
-	.wedges {
-		text-align: left;
-	}
 </style>

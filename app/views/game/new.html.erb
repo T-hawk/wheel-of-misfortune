@@ -3,5 +3,7 @@
   <a class="btn btn-outline-primary" href="/scoreboard" role="button">High Scores</a>
 </nav>
 
-<%= javascript_pack_tag 'create' %>
-<%= stylesheet_pack_tag 'create' %>
+<% content_for :head do %>
+  <%= javascript_pack_tag 'create' %>
+  <%= stylesheet_pack_tag 'create' %>
+<% end %>
