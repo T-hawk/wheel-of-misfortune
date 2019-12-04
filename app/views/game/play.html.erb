@@ -2,6 +2,7 @@
   <%= javascript_pack_tag 'game' %>
   <%= stylesheet_pack_tag 'game' %>
 <% end %>
+<%= @game.wheel.sections %>
 
-<%= content_tag :div, class: "game_data", data: { wheel: @wheel, teams: @teams } do %>
+<%= content_tag :div, class: "game_data", data: { wheel: @game.wheel.sections, teams: @game.teams } do %>
 <% end %>

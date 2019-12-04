@@ -95,7 +95,7 @@
   function createGame() {
     console.log("button triggered")
     Rails.ajax({
-        url: "/play",
+        url: "game/create",
         type: "POST",
         dataType: "json",
         data: "game=" + JSON.stringify({

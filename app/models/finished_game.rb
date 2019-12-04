@@ -1,0 +1,2 @@
+class FinishedGame < ActiveGame
+end

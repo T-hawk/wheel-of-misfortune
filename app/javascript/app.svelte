@@ -13,6 +13,8 @@
 	let numOfWedges = 4;
   let wedges = [];
 
+  let teams;
+
   let previousSpin;
 
   let width = 300;
@@ -20,8 +22,6 @@
   let radius = width / 2;
 
   let angle = 0;
-
-  let editMode = false;
 
   let velocity = 0;
   let spinning = false;
