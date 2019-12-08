@@ -12,6 +12,7 @@ gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.7'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'jquery-rails'
+gem 'jquery-turbolinks'
 
 gem 'bootstrap', '~> 4.3.1'
 gem 'bootstrap_form', '~> 4.0'

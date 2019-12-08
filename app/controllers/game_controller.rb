@@ -1,4 +1,5 @@
 require "pp"
+require "json"
 
 class GameController < ApplicationController
 
@@ -16,8 +17,6 @@ class GameController < ApplicationController
     @game.save
 
     pp "-------------------------------------------------------------------------------------------"
-    pp "Team data..............................."
-    pp @game[:teams]
     pp "Wheel data..............................."
     pp @wheel
     pp "-------------------------------------------------------------------------------------------"
@@ -27,6 +26,9 @@ class GameController < ApplicationController
 
   def play
     @game = ActiveGame.find(params[:game_id])
+
+    @wheel = eval(@game.wheel.sections)
+    @teams = eval(@game.teams)
   end
 
   def end

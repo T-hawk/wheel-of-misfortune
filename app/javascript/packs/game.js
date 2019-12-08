@@ -9,7 +9,8 @@
 // document.addEventListener('turbolinks:load', () => {
 import Game from '../app.svelte'
 // $(document).on('load turbolinks:load', function() {
-document.addEventListener("DOMContentLoaded", () => {
+// $(document).on('DOMContentLoaded', function() {
+$(document).ready( function() {
   const game = new Game({
     target: document.body,
     props: {

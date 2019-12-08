@@ -11,24 +11,24 @@
   <br>
   {#each newTeamMembers as member, i}
     <label><input class="form-control" type="text" bind:value={member}></label>
-    <button class="btn bg-gradient-danger text-light" on:click={() => removeTeamMember(i)}>Remove Team Member</button>
+    <button class="btn btn-outline-danger text-light" on:click={() => removeTeamMember(i)}>Remove Team Member</button>
     <br>
   {/each}
   <br>
   <button class="btn bg-gradient-primary text-light" on:click={addTeamMember}>Add New Member</button>
-  <button class="btn bg-gradient-primary text-light" on:click={addTeam}>Add Team</button>
+  <button class="btn bg-gradient-success text-light" on:click={addTeam}>Add Team</button>
 </div>
 
 <div class="teams">
   {#each teams as team, i}
-    <div class="team">
+    <div class="bg-gradient-primary rounded p-3 m-3">
       <h3>{team.name}</h3>
       <p>Members:</p>
       {#each team.members as member}
         <p class="member">{member}</p>
       {/each}
-      <button on:click={() => removeTeam(i)}>Remove Team</button>
-      <button on:click={() => editTeam(i)}>Edit</button>
+      <button class="btn btn-outline-warning text-light" on:click={() => editTeam(i)}>Edit</button>
+      <button class ="btn btn-outline-danger text-light" on:click={() => removeTeam(i)}>Remove Team</button>
     </div>
   {/each}
 </div>
@@ -73,11 +73,12 @@
   let teams = [];
   let newTeam = {
     name: "",
-    members: [""]
+    members: [""],
+    score: 0
   };
   import Rails from 'rails-ujs'
 
-  let specialOptions = ["Trade Points", "Bankrupt", "None"]
+  let specialOptions = ["Trade Points", "Bankrupt", "Subtract", "None"]
 
   let numOfWedges = 4;
   let wedges = [];
@@ -154,7 +155,8 @@
       teams = teams;
       newTeam = {
         name: "",
-        members: [""]
+        members: [""],
+        score: 0
       };
       newTeamMembers = [""];
       newTeam = newTeam;
