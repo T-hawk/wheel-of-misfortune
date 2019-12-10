@@ -21,7 +21,7 @@
 
 <div class="teams">
   {#each teams as team, i}
-    <div class="bg-gradient-primary rounded p-3 m-3">
+    <div class="bg-gradient-primary rounded p-3 m-3 text-left">
       <h3>{team.name}</h3>
       <p>Members:</p>
       {#each team.members as member}
