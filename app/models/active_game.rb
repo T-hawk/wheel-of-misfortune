@@ -1,3 +1,3 @@
 class ActiveGame < ApplicationRecord
-  has_one :wheel
+  belongs_to :wheel
 end

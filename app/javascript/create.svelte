@@ -174,10 +174,6 @@
     text-align: center;
   }
 
-  .blue-btn {
-    font-size: 1rem;
-  }
-
   .teams {
     margin: 0;
     padding: 0;

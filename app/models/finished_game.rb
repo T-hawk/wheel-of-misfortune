@@ -1,2 +1,3 @@
-class FinishedGame < ActiveGame
+class FinishedGame < ApplicationRecord
+  belongs_to :wheel
 end

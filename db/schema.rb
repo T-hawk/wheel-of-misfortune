@@ -10,19 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_07_220246) do
+ActiveRecord::Schema.define(version: 2019_12_09_044214) do
 
   create_table "active_games", force: :cascade do |t|
     t.string "teams"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "wheel_id"
   end
 
   create_table "finished_games", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "teams"
-    t.string "victorious_team"
+    t.integer "wheel_id"
+    t.integer "victorious_team"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -36,7 +38,6 @@ ActiveRecord::Schema.define(version: 2019_12_07_220246) do
     t.string "sections"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "active_game_id"
   end
 
 end

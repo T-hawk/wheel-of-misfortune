@@ -1,5 +1,5 @@
 
-import Create from '../create.svelte'
+import Create from '../create.svelte';
 $(document).on('DOMContentLoaded', function() {
 // document.addEventListener("DOMContentLoaded", () => {
   const create = new Create({

@@ -7,9 +7,15 @@
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-    <%= yield :head %>
+    <%= stylesheet_link_tag 'main' %>
+    <%= yield(:head)  %>
   </head>
   <body>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="/">Wheel of Misfortune</a>
+        <a class="btn btn-outline-primary" href="/scoreboard" role="button">High Scores</a>
+        <a class="btn btn-outline-success" href="/new" data-turbolinks="false" role="button">New Game</a>
+    </nav>
     <%= yield %>
   </body>
 </html>

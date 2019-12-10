@@ -1,39 +1,65 @@
-<h1 class="title">Wheel of Misfortune</h1>
-<div class="row text-left align-center">
-    {#each teams as team, i}
-        <button class="col-sm-1-4 text-left btn btn-{spinningTeam == i ? "success" : "primary"} p-4 m-4" on:click={() => allowSpin(i)}>
-            <h1>{team.name}</h1>
-            <h3>Members:</h3>
-            <ul>
-                {#each team.members as member}
-                    <li>{member}</li>
-                {/each}
-            </ul>
-            <h3>Score:</h3>
-            <h4>{team.score}</h4>
-        </button>
-    {/each}
+<div class="row text-left">
+    {#if state.current == "TRADING"}
+        {#each teams as team, i}
+            {#if i != state.team}
+                <button class="col-sm-1-4 text-left btn btn-warning p-4 m-4" on:click={() => tradeWith(i)}>
+                    <h1>{team.name}</h1>
+                    <h3>Members:</h3>
+                    <ul>
+                        {#each team.members as member}
+                            <li>{member}</li>
+                        {/each}
+                    </ul>
+                    <h3>Score:</h3>
+                    <h4>{team.score}</h4>
+                </button>
+            {/if}
+        {/each}
+    {:else}
+        {#each teams as team, i}
+            <button class="col-sm-1-4 text-left btn btn-{spinningTeam == i ? "success" : "primary"} p-4 m-4" on:click={() => allowSpin(i)}>
+                <h1>{team.name}</h1>
+                <h3>Members:</h3>
+                <ul>
+                    {#each team.members as member}
+                        <li>{member}</li>
+                    {/each}
+                </ul>
+                <h3>Score:</h3>
+                <h4>{team.score}</h4>
+            </button>
+        {/each}
+    {/if}
+
 </div>
+<button on:click={endGame} class="btn btn-danger">End Game</button>
 <Canvas sketch={sketch}/>
 <button on:click={spin} class="btn btn-{spinningTeam != null ? "success" : "secondary"} m-5" id="spin">Spin</button>
 <br>
 <br>
-<h3>{previousSpin ? previousSpin : ""}</h3>
-
-
+<h3>{display ? display : ""}</h3>
 
 <script>
  import Canvas from "./canvas.svelte";
+ import Rails from 'rails-ujs'
  const svelte = require('svelte/compiler');
 
  let wedges = JSON.parse(window.$("#game_data").attr("data-wheel"));
+
+ let wheelID = window.$("#game_data").attr("data-wheel-id");
+ let gameID = window.$("#game_data").attr("data-game-id");
+
+ let state = {
+     current: "TEAM_SELECT",
+     team: 0
+ }
 
  let selectedTeamClass;
 
  let numOfWedges = wedges.length;
  let teams = JSON.parse(window.$("#game_data").attr("data-teams"));
 
- let previousSpin;
+ let display;
  let spinningTeam;
 
  let width = 300;
@@ -43,23 +69,56 @@
  let angle = 0;
 
  let velocity = 0;
- let spinning = false;
 
  let spinVelocity = 20;
  let resistance = .4;
 
  function allowSpin(teamIndex) {
-     if (!spinning) {
+     if (state.current != "SPINNING") {
          spinningTeam = teamIndex;
      }
 
  }
 
+ function tradeWith(teamIndex) {
+     let tradingTeamScore = teams[state.team].score;
+     let otherTeamScore = teams[teamIndex].score;
+
+     teams[state.team].score = otherTeamScore;
+     teams[teamIndex].score = tradingTeamScore;
+
+     state.current = "TEAM_SELECT"
+     state.team = 0;
+     display = "";
+ }
+
  function spin() {
-     if (!spinning && spinningTeam != null) {
-         spinning = true;
+     if (state.current != "SPINNING" && spinningTeam != null) {
+         state.current = "SPINNING"
+         state.team = spinningTeam
          velocity = Math.floor(Math.random() * (spinVelocity - 10)) + (spinVelocity + 10);
      }
+ }
+
+ function endGame() {
+     let victoriousTeam = 0;
+     for (let i = 0; i < teams.length; i++) {
+         if (teams[i].score > teams[victoriousTeam].score) {
+             victoriousTeam = i;
+         }
+     }
+
+     Rails.ajax({
+         url: "/game/end",
+         type: "POST",
+         dataType: "json",
+         data: "game=" + JSON.stringify({
+             "game_id": parseInt(gameID),
+             "teams": teams,
+             "wheel_id": parseInt(wheelID),
+             "victorious_team": victoriousTeam
+         })
+     })
  }
 
  let sketch = function(p5) {
@@ -68,8 +127,7 @@
          for (let i = wedges.length - 1; i >= 0; i--) {
              let sectionAngle = 360 / wedges.length;
              if (angle >= (i + 1) * sectionAngle - sectionAngle && angle < (i + 1) * sectionAngle) {
-                 console.log(wedges);
-                 previousSpin = wedges[i].text;
+                 display = wedges[i].text;
                  if (wedges[i].special == "None") {
                      teams[spinningTeam].score += wedges[i].value;
                  } else if (wedges[i].special == "Subtract") {
@@ -79,7 +137,9 @@
                         teams[spinningTeam].score = 0;
                      }
                  } else if (wedges[i].special == "Trade Points") {
-                     // Execute sum stuff
+                     state.current = "TRADING";
+                     state.team = spinningTeam;
+                     display = "Who would you like to trade with " + teams[state.team].name + "?" + " Your current score is " + teams[state.team].score;
                  }
 
 
@@ -105,11 +165,11 @@
 
          p5.translate(200, 200)
 
-         if (spinning) {
+         if (state.current == "SPINNING") {
              velocity -= p5.sq(resistance);
 
              if (velocity <= 0) {
-                 spinning = false;
+                 state.current = "TEAM_SELECT"
                  velocity = 0;
                  wheelLanded();
              }

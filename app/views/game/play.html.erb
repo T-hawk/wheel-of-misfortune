@@ -3,5 +3,5 @@
     <%= stylesheet_pack_tag 'game' %>
 <% end %>
 
-<%= content_tag :div, id: "game_data", data: { wheel: @wheel, teams: @teams } do %>
+<%= content_tag :div, id: "game_data", data: { wheel: @wheel, teams: @teams, wheel_id: @wheel_id, game_id: @game.id } do %>
 <% end %>
