@@ -2,3 +2,5 @@
   <%= javascript_pack_tag 'create' %>
   <%= stylesheet_pack_tag 'create' %>
 <% end %>
+<%= content_tag :div, id: "default_wheel", data: { default_wheel: @default_wheel, christmas_wheel: @christmas_wheel } do %>
+<% end %>

@@ -1,0 +1,8 @@
+[{"text": "Trade points", "value": 0, "special": "Trade Points", "id": 0},
+{"text": "Free candy canes! 50 points", "value": 50, "special": "Add", "id": 1},
+{"text": "Youve been naughty! Minus 50 points", "value": 50, "special": "Subtract", "id": 2},
+{"text": "Joy to the world! 75 free points", "value": 75, "special": "Add", "id": 3},
+{"text": "A hippopotamus? for Christmas? 25 points I guess...", "value": 25, "special": "Add", "id": 4},
+{"text": "Stocking full of coal! Bankrupt", "value": 0, "special": "Bankrupt", "id": 5},
+{"text": "Sing a christmas carol! 20 points", "value": 20, "special": "Add", "id": 6},
+{"text": "Uh oh... Krampus! Minus 70 points", "value": 70, "special": "Subtract", "id": 7}]

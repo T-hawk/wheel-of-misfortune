@@ -35,30 +35,35 @@
 <br>
 <br>
 
-
 <!-- Wheel Editing -->
 
 <h3 class="p-3">Wheel Sections</h3>
-<div class="p-3">
-  <label>Number of Sections:<input type="range" on:change={updateWedges} bind:value={numOfWedges} max=10 min=4 step=2></label>
+<div class="p-3" align="left">
+    Presets:<select bind:value={currentWheelPreset} on:change={() => changeWheel(currentWheelPreset)}>
+        {#each presetWheels as wheel}
+            <option value={wheel}>{wheel.text}</option>
+        {/each}
+    </select>
+    <br>
+  <label>Number of Sections:<input type="range" on:change={updateSections} bind:value={numOfSections} max=12 min=4 step=2></label>
   <div class="wedges">
-    {#each wedges as wedge}
-      <div class="p-2 bg-primary rounded">
+    {#each wheel.sections as section}
+      <div class="p-2 w-50 bg-primary rounded">
         <br>
-        Text:<input bind:value={wedge.text}>
+        Text:<input bind:value={section.text}>
         <br>
         Special Case:
         <br>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           {#each specialOptions as option}
             <br>
-            <label class="p-2"><input type="radio" value={option} name={wedge.id} bind:group={wedge.special}> {option}</label>
+            <label class="p-2"><input type="radio" value={option} name={section.id} bind:group={section.special}> {option}</label>
             <br>
           {/each}
         </div>
         <br>
-        {#if true}
-        Point Value:<input type="number" bind:value={wedge.value}>
+        {#if section.special != "Trade Points" && section.special != "Bankrupt"}
+        Point Value:<input type="number" bind:value={section.value}>
         <br>
         {/if}
       </div>
@@ -67,65 +72,147 @@
   </div>
 </div>
 
+{#if errors}
+    {#each errors as error}
+        {#if error != ""}
+            <div class="bg-danger p-2 m-3 w-25 rounded">{error}</div>
+        {/if}
+    {/each}
+{/if}
 <button class="btn btn-success" on:click={createGame}>Create Game</button>
+<br>
+<br>
 
 <script>
+ class Wheel {
+     constructor(sections) {
+         this.sections = sections
+     }
+
+     addSection() {
+         this.sections.push({
+             text: "",
+             special: "Add",
+             id: this.sections.length,
+             value: 0
+         })
+     }
+
+     isInvalid() {
+         for (let i = 0; i < this.sections.length; i++) {
+             if (this.sections[i].text == "") {
+                 return "The text in wheel section " + (i + 1) + " was empty!"
+             }
+
+             if (this.sections[i].value == 0 && this.sections[i].special == "Add") {
+                 return "Wheel section " + (i + 1) + ", it is set to add nothing!"
+             }
+
+             return ""
+         }
+     }
+ }
+
+ class Team {
+     constructor(name, members) {
+         this.name = name;
+         this.members = members;
+
+         this.score = 0;
+     }
+ }
+
+ let defaultWheel = JSON.parse(window.$("#default_wheel").attr("data-default-wheel"));
+ let christmasWheel = JSON.parse(window.$("#default_wheel").attr("data-christmas-wheel"));
+ let presetWheels = [
+     {text: "Custom", wheelSections: [{"text": "", "special": "Add", "value":0},{"text": "", "special": "Add", "value":0},{"text": "", "special": "Add", "value":0},{"text": "", "special": "Add", "value":0}]},
+     {text: "Default", wheelSections: defaultWheel}, {text: "Christmas", wheelSections: christmasWheel}];
+ let currentWheelPreset = "Custom";
+ let wheelId;
+
+  let errors = [];
+
   let teams = [];
-  let newTeam = {
-    name: "",
-    members: [""],
-    score: 0
-  };
+  let newTeam = new Team("", []);
   import Rails from 'rails-ujs'
 
-  let specialOptions = ["Trade Points", "Bankrupt", "Subtract", "None"]
+  let specialOptions = ["Trade Points", "Bankrupt", "Subtract", "Add"]
 
-  let numOfWedges = 4;
-  let wedges = [];
-  for (let i = 0; i < numOfWedges; i++) {
-    wedges.push({
-      text: "",
-      special: "None",
-      id: i,
-      value: 0
-    })
+ let numOfSections = 4;
+
+ let wheel = new Wheel([]);
+
+ for (let i = 0; i < numOfSections; i++) {
+      wheel.addSection();
   }
+
+
+ function teamsAreEmpty(array) {
+     if (!array.length) {
+         return "There are no teams!";
+     }
+
+     return "";
+ } 
+
+ function arrayIsEmpty(array) {
+
+     for (let i = 0; i < array.length; i++) {
+         if (array[i] != "") {
+             return false;
+         }
+     }
+
+     return true;
+ }
 
   let newTeamMembers = [""];
 
   function createGame() {
-    console.log("button triggered")
-    Rails.ajax({
-        url: "game/create",
-        type: "POST",
-        dataType: "json",
-        data: "game=" + JSON.stringify({
-          "teams": teams,
-          "wheel": wedges
-        })
-    });
+    errors = [];
+    errors.push(teamsAreEmpty(teams));
+    errors.push(wheel.isInvalid());
+
+    if (arrayIsEmpty(errors)) {
+        Rails.ajax({
+            url: "game/create",
+            type: "POST",
+            dataType: "json",
+            data: "game=" + JSON.stringify({
+            "teams": teams,
+            "wheel": wheel.sections,
+            "wheel_id": wheelId
+            })
+        });
+        errors = [];
+    }
   }
 
-	function updateWedges() {
-    let newWedges = [];
-		for (let i = 0; i < numOfWedges; i++) {
-      if (i < wedges.length) {
-        newWedges.push({
-          text: wedges[i].text,
-          special: wedges[i].special,
-          id: wedges[i].id,
-          value: wedges[i].value
+ function changeWheel(newWheel) {
+     wheel.sections = newWheel.wheelSections;
+     numOfSections = newWheel.wheelSections.length;
+ }
+
+	function updateSections() {
+    let newSections = [];
+		for (let i = 0; i < numOfSections; i++) {
+      if (i < wheel.sections.length) {
+        newSections.push({
+          text: wheel.sections[i].text,
+          special: wheel.sections[i].special,
+          id: wheel.sections[i].id,
+          value: wheel.sections[i].value
         });
       } else {
-        newWedges.push({
+        newSections.push({
           text: "",
-          special: "None",
+          special: "Add",
           id: i,
           value: 0
         })
       }
 		}
-    wedges = newWedges;
+    wheel.sections = newSections;
 	}
 
   function editTeam(index) {
@@ -153,11 +240,7 @@
       newTeam.members = newTeamMembers;
       teams.push(newTeam)
       teams = teams;
-      newTeam = {
-        name: "",
-        members: [""],
-        score: 0
-      };
+      newTeam = new Team("", [])
       newTeamMembers = [""];
       newTeam = newTeam;
     }

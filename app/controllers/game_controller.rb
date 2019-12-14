@@ -1,20 +1,34 @@
 require "pp"
 require "json"
+require "open-uri"
 
 class GameController < ApplicationController
 
   def new
+    @default_wheel = File.read("app/assets/json/default_wheel.json")
+    @christmas_wheel = File.read("app/assets/json/christmas_wheel.json")
   end
 
   def create
     @data = game_data
 
     @teams = @data["teams"]
-    @wheel = Wheel.create(sections: @data["wheel"])
+
+    @newWheel = Wheel.new(sections: @data["wheel"])
+    @wheel = Wheel.where(sections:  @newWheel.sections).first_or_create
 
     @game = @wheel.active_games.create(teams: @teams)
-
     redirect_to @game
+  end
+
+  def save
+    @data = game_data
+
+    @teams = @data["teams"]
+
+    @game = ActiveGame.find(@data["game_id"])
+    @game.teams = @teams
+    @game.save
   end
 
   def play

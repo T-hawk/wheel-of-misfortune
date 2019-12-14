@@ -1,0 +1,3 @@
+* DONE Finish Polishing the UI and making it less fragile
+  
+* TODO Add default wheel and make wheels standard accross games

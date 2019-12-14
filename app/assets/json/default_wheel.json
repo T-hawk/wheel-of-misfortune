@@ -1,0 +1,8 @@
+[{"text": "Trade points", "value": 0, "special": "Trade Points", "id": 0},
+{"text": "Extra Credit! 50 points", "value": 50, "special": "Add", "id": 1},
+{"text": "Do 5 jumping jacks. Minus 50 points", "value": 50, "special": "Subtract", "id": 2},
+{"text": "Do a victory dance! 75 points", "value": 75, "special": "Add", "id": 3},
+{"text": "Give your teamate a high five! 25 points", "value": 25, "special": "Add", "id": 4},
+{"text": "Bankrupt", "value": 0, "special": "Bankrupt", "id": 5},
+{"text": "Jump twice, 20 points", "value": 20, "special": "Add", "id": 6},
+{"text": "5 push ups. minus 70 points", "value": 70, "special": "Subtract", "id": 7}]
