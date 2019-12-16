@@ -1,5 +1,5 @@
 <div id="top"></div>
-{#if state.current == "TEAM_SELECT"}
+{#if state.current == "TEAM_SELECT" || state.current == "TRADING" }
     <div class="row text-left fit-screen">
         {#if state.current == "TRADING"}
             {#each teams as team, i}

@@ -2,12 +2,14 @@
 
 <h1>Scoreboard</h1>
 <br>
-<% @ordered_teams.each do |team| %>
-    <div class="bg-primary rounded m-5 p-3 text-left">
-        <h1><%= team[:victorious_team]["name"] %></h1>
-        <ul>
-            <p>Score: <%= team[:victorious_team]["score"] %></p>
-            <p>Played on: <%= convert_date(team[:date].to_date) %></p>
-        </ul>
-    </div>
+<% if @ordered_teams %>
+    <% @ordered_teams.each do |team| %>
+        <div class="bg-primary rounded m-5 p-3 text-left">
+            <h1><%= team[:victorious_team]["name"] %></h1>
+            <ul>
+                <p>Score: <%= team[:victorious_team]["score"] %></p>
+                <p>Played on: <%= convert_date(team[:date].to_date) %></p>
+            </ul>
+        </div>
+    <% end %>
 <% end %>
